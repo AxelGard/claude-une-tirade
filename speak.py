@@ -7,6 +7,9 @@ Used as a Claude Code hook:
 
 Also usable by hand:
   speak.py --toggle   mute / unmute
+  speak.py --on       unmute
+  speak.py --off      mute
+  speak.py --status   print whether speech is on or off
   speak.py --stop     stop current speech
   speak.py --test     speak a test sentence
   speak.py --filter   read markdown on stdin, print what would be spoken
@@ -238,15 +241,19 @@ def handle_hook(payload):
 
 def main():
     arg = sys.argv[1] if len(sys.argv) > 1 else ""
-    if arg == "--toggle":
-        os.makedirs(HOME_DIR, exist_ok=True)
-        if os.path.exists(MUTE_FILE):
-            os.remove(MUTE_FILE)
+    if arg in ("--toggle", "--on", "--off"):
+        muted = os.path.exists(MUTE_FILE)
+        if arg == "--on" or (arg == "--toggle" and muted):
+            if muted:
+                os.remove(MUTE_FILE)
             print("une-tirade: speech ON")
         else:
+            os.makedirs(HOME_DIR, exist_ok=True)
             open(MUTE_FILE, "w").close()
             stop_speaking()
             print("une-tirade: speech OFF")
+    elif arg == "--status":
+        print("une-tirade: speech " + ("OFF" if os.path.exists(MUTE_FILE) else "ON"))
     elif arg == "--stop":
         stop_speaking()
     elif arg == "--test":

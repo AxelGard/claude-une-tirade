@@ -50,7 +50,14 @@ Merge this into the file (keep whatever settings are already there):
 
 If you already have `Stop` or `UserPromptSubmit` hooks, add the entry to the existing list.
 
-**3. Restart Claude Code.** Check with `/hooks` that both hooks show up.
+**3. (Optional) Add the `/tts` skill** to mute and unmute from inside Claude Code:
+
+```bash
+mkdir -p ~/.claude/skills
+ln -sfn ~/.claude/une-tirade/skills/tts ~/.claude/skills/tts
+```
+
+**4. Restart Claude Code.** Check with `/hooks` that both hooks show up.
 
 Test the voice:
 
@@ -60,9 +67,27 @@ python3 ~/.claude/une-tirade/speak.py --test
 
 ## Usage
 
+### In Claude Code (with the skill)
+
+| Command | What it does |
+|---|---|
+| `/tts off` | Mute |
+| `/tts on` | Unmute |
+| `/tts` | Toggle mute |
+| `/tts stop` | Stop the current speech (stays enabled) |
+| `/tts status` | Say whether speech is on or off |
+| `/tts test` | Speak a test sentence |
+
+You can also just ask, e.g. "mute the voice".
+
+### From the terminal
+
 | Command | What it does |
 |---|---|
 | `python3 ~/.claude/une-tirade/speak.py --toggle` | Mute / unmute |
+| `python3 ~/.claude/une-tirade/speak.py --off` | Mute |
+| `python3 ~/.claude/une-tirade/speak.py --on` | Unmute |
+| `python3 ~/.claude/une-tirade/speak.py --status` | Show whether speech is on or off |
 | `python3 ~/.claude/une-tirade/speak.py --stop` | Stop the current speech |
 | `python3 ~/.claude/une-tirade/speak.py --test` | Speak a test sentence |
 | `echo '...markdown...' \| python3 ~/.claude/une-tirade/speak.py --filter` | Show what would be spoken |
@@ -126,5 +151,9 @@ cd ~/.claude/une-tirade && git pull
 
 ## Uninstall
 
-Remove the two hook entries from `~/.claude/settings.json`, then remove the symlink
-with `rm ~/.claude/une-tirade` (no trailing slash, so the repo itself stays).
+Remove the two hook entries from `~/.claude/settings.json`, then remove the symlinks
+(no trailing slash, so the repo itself stays):
+
+```bash
+rm ~/.claude/une-tirade ~/.claude/skills/tts
+```
